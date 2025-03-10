@@ -16,8 +16,7 @@ class Auth extends BD_Controller {
         $this->load->model('M_main');
     }
 
-    public function login_post()
-    {
+    public function login_post(){
         $u = $this->post('email');
         $p = $this->post('password');
         $q = array('email' => $u); //For where query condition
@@ -39,36 +38,19 @@ class Auth extends BD_Controller {
             $this->set_response($invalidLogin, REST_Controller::HTTP_NOT_FOUND); //This is the respon if failed
         }
     }
+
+    public function updateFCM_post(){
+        $fcm = $this->post('fcm');
+        $id_user = $this->post('id_user');
+        $invalidLogin = ['status' => 'Unable to update fcm'];
+        if (!empty($fcm) && !empty($id_user)) {
+            // Appel à la méthode pour mettre à jour la base de données
+            $this->M_main->update_user_fcm($fcm, $id_user);
+            $output = ['status' => 'FCM updated successfully'];
+            $this->set_response($output, REST_Controller::HTTP_OK);
+        }
+        else {
+            $this->set_response($invalidLogin, REST_Controller::HTTP_NOT_FOUND); //This is the respon if failed
+        }
+    }
 }
-
-
-
-// $p = password_hash($this->post('password'), PASSWORD_ARGON2I, ['memory_cost' => 2048, 'time_cost' => 4, 'threads' => 3]);
-
-
-
-
-
-// public function login_post()
-// {
-//     $u = $this->post('email'); //Username Posted
-//     $p = sha1($this->post('password')); //Pasword Posted
-//     $q = array('email' => $u); //For where query condition
-//     $kunci = $this->config->item('thekey');
-//     $invalidLogin = ['status' => 'Invalid Login']; //Respon if login invalid
-//     $val = $this->M_main->get_user($q)->row(); //Model to get single data row from database base on username
-//     if($this->M_main->get_user($q)->num_rows() == 0){$this->response($invalidLogin, REST_Controller::HTTP_NOT_FOUND);}
-//     $match = $val->password;   //Get password for user from database
-//     if($p == $match){  //Condition if password matched
-//         $token['id'] = $val->id;  //From here
-//         $token['email'] = $u;
-//         $date = new DateTime();
-//         $token['iat'] = $date->getTimestamp();
-//         $token['exp'] = $date->getTimestamp() + 60*60*5; //To here is to generate token
-//         $output['token'] = JWT::encode($token,$kunci ); //This is the output token
-//         $this->set_response($output, REST_Controller::HTTP_OK); //This is the respon if success
-//     }
-//     else {
-//         $this->set_response($invalidLogin, REST_Controller::HTTP_NOT_FOUND); //This is the respon if failed
-//     }
-// }

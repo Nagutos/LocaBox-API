@@ -40,4 +40,16 @@ class M_main extends CI_Model{
 		$this->db->where("'$actual_date' BETWEEN rent.start_reservation_date AND rent.end_reservation_date", NULL, FALSE);
 		return $this->db->get('box');
 	}
+
+	/*** 
+		UPDATE user_box SET user_box.fcm="fcm" WHERE user_box.id_user_box = id_user_box
+ 	***/
+	function update_user_fcm($fcm,$id_user){
+		$this->db->set('fcm', $fcm);
+		$this->db->where('id_user_box', $id_user);
+		$this->db->update('user_box');
+	}
+
+	
+	
 }
