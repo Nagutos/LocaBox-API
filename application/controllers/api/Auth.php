@@ -53,4 +53,18 @@ class Auth extends BD_Controller {
             $this->set_response($invalidLogin, REST_Controller::HTTP_NOT_FOUND); //This is the respon if failed
         }
     }
+
+    public function removeFCM_post(){
+        $id_user = $this->post('id_user');
+        $invalidLogin = ['status' => 'Unable to remove fcm'];
+        if (!empty($id_user)) {
+            // Appel à la méthode pour mettre à jour la base de données
+            $this->M_main->delete_user_fcm($id_user);
+            $output = ['status' => 'FCM removed successfully'];
+            $this->set_response($output, REST_Controller::HTTP_OK);
+        }
+        else {
+            $this->set_response($invalidLogin, REST_Controller::HTTP_NOT_FOUND); //This is the respon if failed
+        }
+    }
 }

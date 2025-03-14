@@ -25,18 +25,19 @@ class M_main extends CI_Model{
 	}
 
 	/*** 
-		SELECT box.id_box,  warehouse.name AS "Warehouse_name", box.current_code, box.generated_code
+		SELECT box.id_box,  warehouse.name AS "Warehouse_name", box.current_code, box.generated_code, rent.status, box.num
 		FROM box
 		INNER JOIN rent ON rent.id_box = box.id_box
 		INNER JOIN warehouse ON warehouse.id_warehouse = box.id_warehouse
-		WHERE rent.id_user_box = 1 AND rent.id_box = 1 AND "2025-02-06 02:55:39" BETWEEN rent.start_reservation_date AND rent.end_reservation_date
+		WHERE rent.id_user_box = 23 AND "2025-06-06 02:55:39" BETWEEN rent.start_reservation_date AND rent.end_reservation_date AND rent.status = "En Cours"
 	***/
 	function get_code_box($id_user,$actual_date,$id_box){
-		$this->db->select("box.id_box,  warehouse.name, box.current_code, box.generated_code");
+		$this->db->select("box.id_box,  warehouse.name, box.current_code, box.generated_code, rent.end_reservation_date");
 		$this->db->join('rent', 'rent.id_box = box.id_box', 'inner');
 		$this->db->join('warehouse', 'warehouse.id_warehouse = box.id_warehouse', 'inner');
 		$this->db->where("rent.id_user_box", $id_user);
 		$this->db->where("rent.id_box", $id_box);
+		$this->db->where('rent.status', 'En Cours');
 		$this->db->where("'$actual_date' BETWEEN rent.start_reservation_date AND rent.end_reservation_date", NULL, FALSE);
 		return $this->db->get('box');
 	}
@@ -49,7 +50,25 @@ class M_main extends CI_Model{
 		$this->db->where('id_user_box', $id_user);
 		$this->db->update('user_box');
 	}
+	
+	/*** 
+		UPDATE user_box SET user_box.fcm="fcm" WHERE user_box.id_user_box = id_user_box
+ 	***/	
+	function delete_user_fcm($id_user){
+		$this->db->set('fcm', "");
+		$this->db->where('id_user_box', $id_user);
+		$this->db->update('user_box');
+	}
 
-	
-	
+	/*** 
+		SELECT user_box.fcm FROM user_box WHERE user_box.id_user_box = id_user_box
+ 	***/	
+	function get_fcm_by_user_id($id_user){
+		$this->db->select('user_box.fcm');
+		$this->db->from('user_box');
+		$this->db->where('user_box.id_user_box', $id_user);
+
+		$query = $this->db->get();
+		return $query->row();
+	}
 }

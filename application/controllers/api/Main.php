@@ -38,6 +38,32 @@ class Main extends BD_Controller {
         }
     }
 
+    public function fcm_get() {
+        $id_user = $_GET["id_user"];
+    
+        if (!$id_user) {
+            $this->response([
+                'status' => FALSE,
+                'message' => 'Missing user ID'
+            ], REST_Controller::HTTP_BAD_REQUEST); // 400 Bad Request
+            return;
+        }
+    
+        $fcm = $this->M_main->get_fcm_by_user_id($id_user); // Appel au modèle
+    
+        if ($fcm) {
+            $this->response([
+                'status' => TRUE,
+                'fcm' => $fcm->fcm
+            ], REST_Controller::HTTP_OK); // 200 OK
+        } else {
+            $this->response([
+                'status' => FALSE,
+                'message' => 'No FCM token found'
+            ], REST_Controller::HTTP_NOT_FOUND); // 404 Not Found
+        }
+    }
+
 
     public function users_get(){
         $users = $this->M_main->get_user_box()->row();
