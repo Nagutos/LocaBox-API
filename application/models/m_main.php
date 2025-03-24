@@ -32,7 +32,7 @@ class M_main extends CI_Model{
 		WHERE rent.id_user_box = 23 AND "2025-06-06 02:55:39" BETWEEN rent.start_reservation_date AND rent.end_reservation_date AND rent.status = "En Cours"
 	***/
 	function get_code_box($id_user,$actual_date,$id_box){
-		$this->db->select("box.id_box,  warehouse.name, box.current_code, box.generated_code, rent.end_reservation_date");
+		$this->db->select("box.id_box,  warehouse.name, box.current_code, rent.end_reservation_date");
 		$this->db->join('rent', 'rent.id_box = box.id_box', 'inner');
 		$this->db->join('warehouse', 'warehouse.id_warehouse = box.id_warehouse', 'inner');
 		$this->db->where("rent.id_user_box", $id_user);
